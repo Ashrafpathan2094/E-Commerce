@@ -26,7 +26,7 @@ app.listen(3000, () => {
 });
 
 app.use("/user", routes);
-app.use("/", () => {
+app.use("/", (req,res) => {
   console.log("working");
   return res.status(200).json({ message: "Working" });
 });
