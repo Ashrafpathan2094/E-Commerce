@@ -3,6 +3,15 @@ const express = require("express");
 const router = express.Router();
 const User = require("../models/user");
 const Address = require("../models/address");
+const jwt = require("jsonwebtoken");
+const authMiddleware = require("../helper/authMiddleware");
+
+//Generate JWT Token
+const generateToken = (id) => {
+  return jwt.sign({ id }, process.env.JWT_SECRET, {
+    expiresIn: "10d",
+  });
+};
 
 //User Register
 exports.userRegister = async (req, res) => {
@@ -31,9 +40,11 @@ exports.userRegister = async (req, res) => {
 
     const saveUser = await user.save();
     user.password = undefined;
-    return res
-      .status(201)
-      .json({ message: "User Registered SuccessFully", user: saveUser });
+    return res.status(201).json({
+      message: "User Registered SuccessFully",
+      user: saveUser,
+      token: generateToken(user._id),
+    });
   } catch (err) {
     return res
       .status(500)
@@ -49,7 +60,11 @@ exports.userLogin = async (req, res) => {
   // check if email valid and decrypt password for check
   if (user && (await bcrypt.compare(password, user.password))) {
     user.password = undefined;
-    return res.status(201).json({ message: "Login Succes", user: user });
+    return res.status(201).json({
+      message: "Login Succes",
+      user: user,
+      token: generateToken(user._id),
+    });
   } else {
     return res
       .status(409)
@@ -60,8 +75,10 @@ exports.userLogin = async (req, res) => {
 //User Add Address
 exports.userAddress = async (req, res) => {
   try {
+    // authMiddleware(req, res, next);
+
     //check if user id is valid
-    const user = await User.find({_id:req.body.userId});
+    const user = await User.find({ _id: req.body.userId });
     if (!user) {
       return res
         .status(404)

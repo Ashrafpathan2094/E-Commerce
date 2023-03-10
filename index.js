@@ -1,7 +1,9 @@
 require("dotenv").config();
 const express = require("express");
 const mongoose = require("mongoose");
-const routes = require("./routes/routes");
+const userLogin = require("./routes/userLogin");
+const userProfileEdit = require("./routes/userProfileEdit");
+const authMiddleware = require("./helper/authMiddleware");
 const mongoString = process.env.DATABASE_URL;
 
 mongoose.connect(mongoString);
@@ -25,8 +27,14 @@ app.listen(3000, () => {
   console.log(`Server started at Port ${3000}`);
 });
 
-app.use("/user", routes);
-app.use("/", (req,res) => {
+
+app.use("/user", userLogin);
+app.use(authMiddleware);
+
+app.use("/profile-edit", userProfileEdit);
+
+
+app.use("/", (req, res) => {
   console.log("working");
   return res.status(200).json({ message: "Working" });
 });
