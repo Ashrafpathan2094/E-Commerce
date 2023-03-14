@@ -43,6 +43,11 @@ const productSchema = mongoose.Schema(
         type: String,
       },
     ],
+    isDeleted: {
+      type: Boolean,
+      required: true,
+      default: false,
+    },
   },
   {
     timestamps: true,

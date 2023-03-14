@@ -6,5 +6,6 @@ const router = express.Router();
 //admin api's
 router.get("/getProduct", productsController.getAllProducts);
 router.post("/addProduct", productsController.createProduct);
+router.post("/deleteProduct", productsController.deleteProduct);
 
 module.exports = router;

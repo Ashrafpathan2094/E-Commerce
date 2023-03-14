@@ -6,15 +6,16 @@ const authMiddleware = require("../helper/authMiddleware");
 exports.getAllProducts = async (req, res) => {
   try {
     user = req.user;
-    const products = await Products.find(req.body).sort({
+    const products = await Products.find({ ...req.body, deleted: false }).sort({
       id: 1,
     });
 
     if (products.length === 0) {
       return res.status(404).json({ error: "No products found" });
     } else {
-      return res.status(200).json({ products: products, user: user });
+      return res.status(200).json({ products: products});
     }
+    
   } catch (err) {
     return res.status(500).json({ error: err.message });
   }
@@ -57,5 +58,26 @@ exports.createProduct = async (req, res) => {
     return res
       .status(403)
       .json({ message: "Error in Product Saving ", error: err.message });
+  }
+};
+
+exports.deleteProduct = async (req, res) => {
+  try {
+    const { id } = req.body;
+    const deleted = await Products.findOneAndUpdate(
+      { _id: id },
+      { $set: { isDeleted: true } }
+    );
+
+    console.log(deleted);
+    if (deleted.isDeleted === true) {
+      return res
+        .status(201)
+        .json({ message: "Deleted SuccessFully", Product: deleted });
+    }
+  } catch (err) {
+    return res
+      .status(404)
+      .json({ message: "No products found", error: err.message });
   }
 };

@@ -35,4 +35,3 @@ app.use(authMiddleware);
 app.use("/profile-edit", userProfileEdit);
 app.use("/products", products);
 app.use("/admin", admin);
-
