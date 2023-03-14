@@ -4,6 +4,7 @@ const mongoose = require("mongoose");
 const userLogin = require("./routes/userLogin");
 const userProfileEdit = require("./routes/userProfileEdit");
 const products = require("./routes/productsRoute");
+const admin = require("./routes/adminRoutes");
 const authMiddleware = require("./helper/authMiddleware");
 const mongoString = process.env.DATABASE_URL;
 
@@ -33,8 +34,5 @@ app.use(authMiddleware);
 
 app.use("/profile-edit", userProfileEdit);
 app.use("/products", products);
+app.use("/admin", admin);
 
-app.use("/", (req, res) => {
-  console.log("working");
-  return res.status(200).json({ message: "Working" });
-});

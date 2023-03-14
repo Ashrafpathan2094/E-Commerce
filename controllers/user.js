@@ -7,8 +7,8 @@ const jwt = require("jsonwebtoken");
 const authMiddleware = require("../helper/authMiddleware");
 
 //Generate JWT Token
-const generateToken = (id) => {
-  return jwt.sign({ id }, process.env.JWT_SECRET, {
+const generateToken = (id, role) => {
+  return jwt.sign({ id, role }, process.env.JWT_SECRET, {
     expiresIn: "10d",
   });
 };
@@ -56,14 +56,14 @@ exports.userRegister = async (req, res) => {
 exports.userLogin = async (req, res) => {
   const { email, password } = req.body;
   const user = await User.findOne({ email });
-
   // check if email valid and decrypt password for check
   if (user && (await bcrypt.compare(password, user.password))) {
     user.password = undefined;
+    const token = generateToken(user._id, user.role);
     return res.status(201).json({
       message: "Login Succes",
       user: user,
-      token: generateToken(user._id),
+      token: token,
     });
   } else {
     return res
