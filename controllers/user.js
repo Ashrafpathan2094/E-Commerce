@@ -73,7 +73,7 @@ exports.userLogin = async (req, res) => {
 };
 
 //User Add Address
-exports.userAddress = async (req, res) => {
+exports.userAddressAdd = async (req, res) => {
   try {
     // authMiddleware(req, res, next);
 

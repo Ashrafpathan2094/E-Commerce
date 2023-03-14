@@ -5,7 +5,7 @@ const router = express.Router();
 
 
 //user Profile Edit
-router.post("/add-address", userController.userAddress);
+router.post("/add-address", userController.userAddressAdd);
 
 
 module.exports = router;

@@ -3,6 +3,7 @@ const express = require("express");
 const mongoose = require("mongoose");
 const userLogin = require("./routes/userLogin");
 const userProfileEdit = require("./routes/userProfileEdit");
+const products = require("./routes/productsRoute");
 const authMiddleware = require("./helper/authMiddleware");
 const mongoString = process.env.DATABASE_URL;
 
@@ -27,12 +28,11 @@ app.listen(3000, () => {
   console.log(`Server started at Port ${3000}`);
 });
 
-
 app.use("/user", userLogin);
 app.use(authMiddleware);
 
 app.use("/profile-edit", userProfileEdit);
-
+app.use("/products", products);
 
 app.use("/", (req, res) => {
   console.log("working");
