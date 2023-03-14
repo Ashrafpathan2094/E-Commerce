@@ -11,12 +11,12 @@ exports.getAllProducts = async (req, res) => {
     });
 
     if (products.length === 0) {
-      res.status(404).json({ error: "No products found" });
+      return res.status(404).json({ error: "No products found" });
     } else {
-      res.status(200).json({ products: products, user: user });
+      return res.status(200).json({ products: products, user: user });
     }
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    return res.status(500).json({ error: err.message });
   }
 };
 
