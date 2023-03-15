@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const Products = require("../models/products");
 const authMiddleware = require("../helper/authMiddleware");
+const { ObjectId } = require("mongodb");
 
 exports.getAllProducts = async (req, res) => {
   try {
@@ -13,9 +14,8 @@ exports.getAllProducts = async (req, res) => {
     if (products.length === 0) {
       return res.status(404).json({ error: "No products found" });
     } else {
-      return res.status(200).json({ products: products});
+      return res.status(200).json({ products: products });
     }
-    
   } catch (err) {
     return res.status(500).json({ error: err.message });
   }
@@ -69,7 +69,6 @@ exports.deleteProduct = async (req, res) => {
       { $set: { isDeleted: true } }
     );
 
-    console.log(deleted);
     if (deleted.isDeleted === true) {
       return res
         .status(201)
@@ -79,5 +78,28 @@ exports.deleteProduct = async (req, res) => {
     return res
       .status(404)
       .json({ message: "No products found", error: err.message });
+  }
+};
+
+exports.updateProduct = async (req, res) => {
+  try {
+    const productId = req.params.id;
+    const updateProduct = req.body;
+
+    if (!ObjectId.isValid(productId)) {
+      return res.status(404).json({ message: "Invalid Product ID" });
+    }
+
+    const updated = await Products.findByIdAndUpdate(productId, updateProduct, {
+      new: true,
+    });
+
+    return res
+      .status(201)
+      .json({ message: "Product Updated SuccessFully", Product: updated });
+  } catch (err) {
+    return res
+      .status(409)
+      .json({ message: "Failed to Update Products", error: err.message });
   }
 };
