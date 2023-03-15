@@ -7,7 +7,10 @@ const { ObjectId } = require("mongodb");
 exports.getAllProducts = async (req, res) => {
   try {
     user = req.user;
-    const products = await Products.find({ ...req.body, deleted: false }).sort({
+    const products = await Products.find({
+      ...req.body,
+      isDeleted: false,
+    }).sort({
       id: 1,
     });
 
@@ -63,7 +66,7 @@ exports.createProduct = async (req, res) => {
 
 exports.deleteProduct = async (req, res) => {
   try {
-    const { id } = req.body;
+    const id = req.params;
     const deleted = await Products.findOneAndUpdate(
       { _id: id },
       { $set: { isDeleted: true } }
