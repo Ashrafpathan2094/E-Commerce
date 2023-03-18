@@ -4,7 +4,7 @@ const authMiddleware = require("../helper/authMiddleware");
 const router = express.Router();
 
 //admin api's
-router.get("/getProduct", productsController.getAllProducts);
+router.get("/getProducts", productsController.getAllProducts);
 router.post("/addProduct", productsController.createProduct);
 router.post("/deleteProduct/:id", productsController.deleteProduct);
 router.put("/updateProduct/:id", productsController.updateProduct);
