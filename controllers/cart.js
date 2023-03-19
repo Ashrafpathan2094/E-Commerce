@@ -6,7 +6,7 @@ exports.cartAdd = async (req, res) => {
     const user = req.user.id;
 
     //find if cart exists for the user
-    let cart = await Cart.findOne({ user });
+    let cart = await Cart.findOne({ user_id: user });
 
     //if cart doesnt exist create a new cart
     if (!cart) {
@@ -14,12 +14,16 @@ exports.cartAdd = async (req, res) => {
         user_id: user,
         items: [{ productId, quantity, price }],
       });
+      return res.status(201).json({
+        message: "Cart Created and Product Added to cart",
+        cart: newCart,
+      });
     }
 
     //if cart exist for this user
     if (cart) {
       // find the index of the product we are trying to add
-      let itemIndex = cart.products.findIndex((p) => p.productId == productId);
+      let itemIndex = cart.items.findIndex((p) => p.productId == productId);
 
       if (itemIndex > -1) {
         // if product exist in cart just update the quantity of that product
@@ -30,7 +34,7 @@ exports.cartAdd = async (req, res) => {
         cart.items[itemIndex] = foundProductInCart;
       } else {
         //product does not exists in cart, add new item
-        cart.products.push({ productId, quantity, price });
+        cart.items.push({ productId, quantity, price });
       }
       cart = await cart.save();
       return res
