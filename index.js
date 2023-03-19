@@ -5,6 +5,7 @@ const userLogin = require("./routes/userLogin");
 const userProfileEdit = require("./routes/userProfileEdit");
 const products = require("./routes/productsRoute");
 const admin = require("./routes/adminRoutes");
+const cart = require("./routes/cart");
 const authMiddleware = require("./helper/authMiddleware");
 const mongoString = process.env.DATABASE_URL;
 
@@ -34,4 +35,5 @@ app.use(authMiddleware);
 
 app.use("/profile-edit", userProfileEdit);
 app.use("/products", products);
+app.use("/cart", cart);
 app.use("/admin", admin);

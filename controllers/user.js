@@ -1,10 +1,7 @@
 const bcrypt = require("bcrypt");
-const express = require("express");
-const router = express.Router();
 const User = require("../models/user");
 const Address = require("../models/address");
 const jwt = require("jsonwebtoken");
-const authMiddleware = require("../helper/authMiddleware");
 const { userRegisterSchema } = require("../joiSchemas/userSchema");
 
 //Generate JWT Token
@@ -17,8 +14,6 @@ const generateToken = (id, role) => {
 //User Register
 exports.userRegister = async (req, res) => {
   try {
-    const { name, email, phone, password } = req.body;
-
     const { error, value } = userRegisterSchema.validate(req.body, {
       abortEarly: false,
     });
@@ -26,6 +21,8 @@ exports.userRegister = async (req, res) => {
     if (error) {
       return res.status(403).json({ error: error.message });
     }
+    const { name, email, phone, password } = req.body;
+
     // check if  user already exists
     const userExist = await User.findOne({
       $or: [{ email: email }, { phone: phone }],

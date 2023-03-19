@@ -1,8 +1,6 @@
-const express = require("express");
-const router = express.Router();
 const Products = require("../models/products");
-const authMiddleware = require("../helper/authMiddleware");
 const { ObjectId } = require("mongodb");
+const { productSchema } = require("../joiSchemas/productSchema");
 
 exports.getAllProducts = async (req, res) => {
   try {
@@ -39,6 +37,13 @@ exports.createProduct = async (req, res) => {
       images,
     } = req.body;
 
+    const { error, value } = productSchema.validate(req.body, {
+      abortEarly: false,
+    });
+
+    if (error) {
+      return res.status(403).json({ error: error.message });
+    }
     const newProduct = new Products({
       title,
       description,
