@@ -26,6 +26,13 @@ const app = express();
 
 app.use(express.json());
 
+app.get('/', (req, res) => {
+  const response = {
+    message: 'Server is working!'
+  };
+
+  res.json(response);
+});
 app.listen(3000, () => {
   console.log(`Server started at Port ${3000}`);
 });
