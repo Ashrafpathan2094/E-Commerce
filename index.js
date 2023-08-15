@@ -21,8 +21,9 @@ database.on("error", (error) => {
 database.once("connected", () => {
   console.log("Connected to DataBase");
 });
-
+const cors = require('cors');
 const app = express();
+app.use(cors());
 
 app.use(express.json());
 
