@@ -1,7 +1,7 @@
 const Joi = require("joi");
 
 const userRegisterSchema = Joi.object({
-  name: Joi.string().alphanum().min(3).max(30).required(),
+  name: Joi.string().min(3).max(30).required(),
 
   phone: Joi.string()
     .pattern(/^\d{10}$/) // enforce 10-digit format
