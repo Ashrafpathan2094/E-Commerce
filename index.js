@@ -21,15 +21,24 @@ database.on("error", (error) => {
 database.once("connected", () => {
   console.log("Connected to DataBase");
 });
-const cors = require('cors');
+const cors = require("cors");
 const app = express();
-app.use(cors());
+// app.use(cors());
+
+const corsOptions = {
+  origin: "*", // Allow requests from any origin (not recommended for production)
+  methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
+  credentials: true,
+  optionsSuccessStatus: 204,
+};
+
+app.use(cors(corsOptions));
 
 app.use(express.json());
 
-app.get('/', (req, res) => {
+app.get("/", (req, res) => {
   const response = {
-    message: 'Server is working!'
+    message: "Server is working!",
   };
 
   res.json(response);
