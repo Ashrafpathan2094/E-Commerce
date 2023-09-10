@@ -24,6 +24,6 @@ module.exports = function protect(req, res, next) {
 
     next();
   } catch (err) {
-    return res.status(400).json({ message: "Invalid token", token: token });
+    return res.status(401).json({ message: "Invalid token", token: token });
   }
 };
