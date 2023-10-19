@@ -5,17 +5,26 @@ const { productSchema } = require("../joiSchemas/productSchema");
 exports.getAllProducts = async (req, res) => {
   try {
     user = req.user;
-    const products = await Products.find({
+    const { page, limit } = req.query;
+    const filter = {
       ...req.body,
       isDeleted: false,
-    }).sort({
-      id: 1,
-    });
+    };
 
+    const skip = (page - 1) * limit;
+
+    const products = await Products.find(filter)
+      .sort({ id: 1 })
+      .skip(skip)
+      .limit(parseInt(limit));
+
+    const totalProductsCount = await Products.countDocuments(filter);
     if (products.length === 0) {
       return res.status(404).json({ error: "No products found" });
     } else {
-      return res.status(200).json({ products: products });
+      return res
+        .status(200)
+        .json({ products: products, totalProducts: totalProductsCount });
     }
   } catch (err) {
     return res.status(500).json({ error: err.message });
@@ -115,23 +124,36 @@ exports.updateProduct = async (req, res) => {
 exports.searchProductsByTitle = async (req, res) => {
   try {
     const { title } = req.body;
+    const { page, limit } = req.query;
+
     if (!title) {
       return res
         .status(400)
         .json({ error: "Title parameter is missing in the body" });
     }
+    const skip = (page - 1) * limit;
 
     const products = await Products.find({
       title: { $regex: new RegExp(title, "i") }, // Case-insensitive search
       isDeleted: false,
-    }).sort({
-      id: 1,
+    })
+      .sort({
+        id: 1,
+      })
+      .skip(skip)
+      .limit(parseInt(limit));
+
+    const totalProductsCount = await Products.countDocuments({
+      title: { $regex: new RegExp(title, "i") }, // Count documents based on the title filter
+      isDeleted: false,
     });
 
     if (products.length === 0) {
       return res.status(404).json({ error: "No products found" });
     } else {
-      return res.status(200).json({ products: products });
+      return res
+        .status(200)
+        .json({ products: products, totalProducts: totalProductsCount });
     }
   } catch (err) {
     return res.status(500).json({ error: err.message });
