@@ -111,3 +111,29 @@ exports.updateProduct = async (req, res) => {
       .json({ message: "Failed to Update Products", error: err.message });
   }
 };
+
+exports.searchProductsByTitle = async (req, res) => {
+  try {
+    const { title } = req.body;
+    if (!title) {
+      return res
+        .status(400)
+        .json({ error: "Title parameter is missing in the body" });
+    }
+
+    const products = await Products.find({
+      title: { $regex: new RegExp(title, "i") }, // Case-insensitive search
+      isDeleted: false,
+    }).sort({
+      id: 1,
+    });
+
+    if (products.length === 0) {
+      return res.status(404).json({ error: "No products found" });
+    } else {
+      return res.status(200).json({ products: products });
+    }
+  } catch (err) {
+    return res.status(500).json({ error: err.message });
+  }
+};
