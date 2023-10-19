@@ -3,7 +3,6 @@ const Cart = require("../models/cart");
 
 exports.cartAdd = async (req, res) => {
   try {
-
     const { error, value } = CartAddSchema.validate(req.body, {
       abortEarly: false,
     });
@@ -50,6 +49,26 @@ exports.cartAdd = async (req, res) => {
         .status(201)
         .json({ message: "Product Added to cart", cart: cart });
     }
+  } catch (err) {
+    return res
+      .status(500)
+      .json({ message: "Something went wrong", error: err.message });
+  }
+};
+
+exports.cartDelete = async (req, res) => {
+  try {
+    const user = req.user.id;
+
+    const deletedCart = await Cart.findOneAndDelete({ user_id: user });
+
+    if (!deletedCart) {
+      return res.status(404).json({ message: "Cart not found" });
+    }
+
+    return res
+      .status(200)
+      .json({ message: "Cart deleted successfully", deletedCart });
   } catch (err) {
     return res
       .status(500)
