@@ -36,6 +36,16 @@ app.use(cors(corsOptions));
 
 app.use(express.json());
 
+
+// Add this error handling middleware after your routes, but before starting the server
+app.use((err, req, res, next) => {
+  if (err instanceof SyntaxError && err.status === 400 && "body" in err) {
+    res.status(400).json({ error: "Invalid JSON" });
+  } else {
+    next(err); // Pass the error to the default Express error handler
+  }
+});
+
 app.get("/", (req, res) => {
   const response = {
     message: "Server is working!",

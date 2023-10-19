@@ -1,7 +1,16 @@
+const { CartAddSchema } = require("../joiSchemas/cartSchema");
 const Cart = require("../models/cart");
 
 exports.cartAdd = async (req, res) => {
   try {
+
+    const { error, value } = CartAddSchema.validate(req.body, {
+      abortEarly: false,
+    });
+
+    if (error) {
+      return res.status(403).json({ error: error.message });
+    }
     const { productId, quantity, price } = req.body;
     const user = req.user.id;
 
