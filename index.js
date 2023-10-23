@@ -58,9 +58,9 @@ app.listen(3000, () => {
 });
 
 app.use("/user", userLogin);
+app.use("/products", products);
 app.use(authMiddleware);
 
 app.use("/profile-edit", userProfileEdit);
-app.use("/products", products);
 app.use("/cart", cart);
 app.use("/admin", admin);
