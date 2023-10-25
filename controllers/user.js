@@ -25,7 +25,7 @@ exports.userRegister = async (req, res) => {
 
     // check if  user already exists
     const userExist = await User.findOne({
-      $or: [{ email: email }, { phone: phone }],
+      $or: [{ email: { $regex: new RegExp(email, "i") } }, { phone: phone }],
     });
     if (userExist) {
       return res
@@ -60,7 +60,9 @@ exports.userRegister = async (req, res) => {
 // user Login
 exports.userLogin = async (req, res) => {
   const { email, password } = req.body;
-  const user = await User.findOne({ email });
+  const user = await User.findOne({
+    email: { $regex: new RegExp(email, "i") },
+  });
   // check if email valid and decrypt password for check
   if (user && (await bcrypt.compare(password, user.password))) {
     user.password = undefined;
